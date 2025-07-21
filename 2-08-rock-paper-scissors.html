@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rock Paper Scissors - Smart AI</title>
+  </head>
+  <body>
+    <p>Rock Paper Scissors</p>
+
+    <button onclick="playGame('Rock')">Rock</button>
+    <button onclick="playGame('Paper')">Paper</button>
+    <button onclick="playGame('Scissors')">Scissors</button>
+    <button onclick="resetScore()">Reset Score</button>
+
+    <p id="scoreDisplay">Wins: 0, Losses: 0, Ties: 0</p>
+
+    <script>
+      const score = {
+        wins: 0,
+        losses: 0,
+        ties: 0
+      };
+
+      const userHistory = {
+        Rock: 0,
+        Paper: 0,
+        Scissors: 0
+      };
+
+      function playGame(playerMove) {
+        userHistory[playerMove]++;
+
+        const computerMove = pickComputerMove();
+
+        let result = '';
+
+        if (playerMove === 'Scissors') {
+          if (computerMove === 'Rock') {
+            result = 'You Lose.';
+          } else if (computerMove === 'Paper') {
+            result = 'You Win.';
+          } else {
+            result = 'Tie.';
+          }
+
+        } else if (playerMove === 'Paper') {
+          if (computerMove === 'Rock') {
+            result = 'You Win.';
+          } else if (computerMove === 'Paper') {
+            result = 'Tie.';
+          } else {
+            result = 'You Lose.';
+          }
+
+        } else if (playerMove === 'Rock') {
+          if (computerMove === 'Rock') {
+            result = 'Tie.';
+          } else if (computerMove === 'Paper') {
+            result = 'You Lose.';
+          } else {
+            result = 'You Win.';
+          }
+        }
+
+        if (result === 'You Win.') {
+          score.wins += 1;
+        } else if (result === 'You Lose.') {
+          score.losses += 1;
+        } else {
+          score.ties += 1;
+        }
+
+        alert(`You picked ${playerMove}. Computer picked ${computerMove}. ${result}
+Wins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties}`);
+
+        updateScoreDisplay();
+      }
+
+      function pickComputerMove() {
+        const mostUsed = getMostUsedUserMove();
+
+        let computerMove = '';
+
+        if (mostUsed === 'Rock') {
+          computerMove = 'Paper';     // Paper beats Rock
+        } else if (mostUsed === 'Paper') {
+          computerMove = 'Scissors'; // Scissors beats Paper
+        } else if (mostUsed === 'Scissors') {
+          computerMove = 'Rock';     // Rock beats Scissors
+        } else {
+          // If no history yet, pick randomly
+          const random = Math.random();
+          if (random < 1 / 3) {
+            computerMove = 'Rock';
+          } else if (random < 2 / 3) {
+            computerMove = 'Paper';
+          } else {
+            computerMove = 'Scissors';
+          }
+        }
+
+        return computerMove;
+      }
+
+      function getMostUsedUserMove() {
+        let maxCount = 0;
+        let mostUsedMove = '';
+
+        for (const move in userHistory) {
+          if (userHistory[move] > maxCount) {
+            maxCount = userHistory[move];
+            mostUsedMove = move;
+          }
+        }
+
+        return mostUsedMove;
+      }
+
+      function updateScoreDisplay() {
+        document.getElementById('scoreDisplay').innerText =
+          `Wins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties}`;
+      }
+
+      function resetScore() {
+        score.wins = 0;
+        score.losses = 0;
+        score.ties = 0;
+
+        userHistory.Rock = 0;
+        userHistory.Paper = 0;
+        userHistory.Scissors = 0;
+
+        updateScoreDisplay();
+      }
+    </script>
+  </body>
+</html>
